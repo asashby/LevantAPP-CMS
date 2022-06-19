@@ -55,6 +55,49 @@ type StepCount = {
     value: string;
 }
 
+type AnswerAnthropometric = {
+    alcoholConsumption: string;
+    cigaretteSmoking: string;
+    civilStatus: string;
+    imc: string;
+    liveWith: string;
+    size: string;
+    waistCircumference: string;
+    weight: string;
+}
+
+type User = {
+    accept: string;
+    date: string;
+    email: string;
+    name: string;
+}
+
+type PersonalData = {
+    activityProfession: string;
+    birthday: string;
+    categoryProfesion: string;
+    centerWork: string;
+    city: string;
+    deptoWork: string;
+    email: string;
+    enterprice: string;
+    facebook: string;
+    faculty: string;
+    gender: string;
+    instagram: string;
+    institution: string;
+    lastName: string;
+    name: string;
+    postalCode: string;
+    profesion: string;
+    professionalSituation: string;
+    study_level: string;
+    twitter: string;
+    university: string;
+    workingDay: string;
+}
+
 const productSchema = buildSchema<Product>({
     name: "Product",
     properties: {
@@ -196,6 +239,194 @@ const stepsCountSchema = buildSchema<StepCount>({
     }
 });
 
+const answerAnthropometricSchema = buildSchema<AnswerAnthropometric>({
+    name: "answers_anthropometric",
+    properties: {
+        alcoholConsumption: {
+            title: "alcoholConsumption",
+            validation: { required: true },
+            dataType: "string"
+        },
+        cigaretteSmoking: {
+            title: "cigaretteSmoking",
+            validation: { required: true },
+            dataType: "string"
+        },
+        civilStatus: {
+            title: "civilStatus",
+            validation: { required: true },
+            dataType: "string"
+        },
+        imc: {
+            title: "imc",
+            validation: { required: true },
+            dataType: "string"
+        },
+        liveWith: {
+            title: "liveWith",
+            validation: { required: true },
+            dataType: "string"
+        },
+        size: {
+            title: "size",
+            validation: { required: true },
+            dataType: "string"
+        },
+        waistCircumference: {
+            title: "waistCircumference",
+            validation: { required: true },
+            dataType: "string"
+        },
+        weight: {
+            title: "weight",
+            validation: { required: true },
+            dataType: "string"
+        }
+    }
+});
+
+const userSchema = buildSchema<User>({
+    name: "confirm_users",
+    properties: {
+        accept: {
+            title: "accept",
+            validation: { required: true },
+            dataType: "string"
+        },
+        date: {
+            title: "date",
+            validation: { required: true },
+            dataType: "string"
+        },
+        email: {
+            title: "email",
+            validation: { required: true },
+            dataType: "string"
+        },
+        name: {
+            title: "name",
+            validation:  { required: true },
+            dataType: "string"
+        }
+    }
+});
+
+const personalDataSchema = buildSchema<PersonalData>({
+    name: "confirm_users",
+    properties: {
+        activityProfession: {
+            title: "activityProfession",
+            validation: { required: true },
+            dataType: "string"
+        },
+        birthday: {
+            title: "birthday",
+            validation: { required: true },
+            dataType: "string"
+        },
+        categoryProfesion: {
+            title: "categoryProfesion",
+            validation: { required: true },
+            dataType: "string"
+        },
+        centerWork: {
+            title: "centerWork",
+            validation:  { required: true },
+            dataType: "string"
+        },
+        city: {
+            title: "city",
+            validation:  { required: true },
+            dataType: "string"
+        },
+        deptoWork: {
+            title: "deptoWork",
+            validation:  { required: true },
+            dataType: "string"
+        },
+        email: {
+            title: "email",
+            validation:  { required: true },
+            dataType: "string"
+        },
+        enterprice: {
+            title: "enterprice",
+            validation:  { required: true },
+            dataType: "string"
+        },
+        facebook: {
+            title: "facebook",
+            validation:  { required: true },
+            dataType: "string"
+        },
+        faculty: {
+            title: "faculty",
+            validation:  { required: true },
+            dataType: "string"
+        },
+        gender: {
+            title: "gender",
+            validation:  { required: true },
+            dataType: "string"
+        },
+        instagram: {
+            title: "instagram",
+            validation:  { required: true },
+            dataType: "string"
+        },
+        institution: {
+            title: "institution",
+            validation:  { required: true },
+            dataType: "string"
+        },
+        lastName: {
+            title: "lastName",
+            validation:  { required: true },
+            dataType: "string"
+        },
+        name: {
+            title: "name",
+            validation:  { required: true },
+            dataType: "string"
+        },
+        postalCode: {
+            title: "postalCode",
+            validation:  { required: true },
+            dataType: "string"
+        },
+        profesion: {
+            title: "profesion",
+            validation:  { required: true },
+            dataType: "string"
+        },
+        professionalSituation: {
+            title: "professionalSituation",
+            validation:  { required: true },
+            dataType: "string"
+        },
+        study_level: {
+            title: "study_level",
+            validation:  { required: true },
+            dataType: "string"
+        },
+        twitter: {
+            title: "twitter",
+            validation:  { required: true },
+            dataType: "string"
+        },
+        university: {
+            title: "university",
+            validation:  { required: true },
+            dataType: "string"
+        },
+        workingDay: {
+            title: "workingDay",
+            validation:  { required: true },
+            dataType: "string"
+        }
+    }
+});
+
 const localeSchema = buildSchema({
     customId: locales,
     name: "Locale",
@@ -238,6 +469,39 @@ export default function App() {
                     path: "steps_count",
                     schema: stepsCountSchema,
                     name: "steps_count",
+                    permissions: ({ authController }) => ({
+                        edit: true,
+                        create: true,
+                        // we have created the roles object in the navigation builder
+                        delete: authController.extra.roles.includes("admin")
+                    })
+                }),
+                buildCollection({
+                    path: "answers_anthropometric",
+                    schema: answerAnthropometricSchema,
+                    name: "answers_anthropometric",
+                    permissions: ({ authController }) => ({
+                        edit: true,
+                        create: true,
+                        // we have created the roles object in the navigation builder
+                        delete: authController.extra.roles.includes("admin")
+                    })
+                }),
+                buildCollection({
+                    path: "confirm_users",
+                    schema: userSchema,
+                    name: "confirm_users",
+                    permissions: ({ authController }) => ({
+                        edit: true,
+                        create: true,
+                        // we have created the roles object in the navigation builder
+                        delete: authController.extra.roles.includes("admin")
+                    })
+                }),
+                buildCollection({
+                    path: "form_personal_data",
+                    schema: personalDataSchema,
+                    name: "form_personal_data",
                     permissions: ({ authController }) => ({
                         edit: true,
                         create: true,
