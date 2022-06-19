@@ -49,6 +49,12 @@ type Product = {
     expires_on: Date
 }
 
+type StepCount = {
+    email: string;
+    profilePicture: string;
+    value: string;
+}
+
 const productSchema = buildSchema<Product>({
     name: "Product",
     properties: {
@@ -169,6 +175,27 @@ const productSchema = buildSchema<Product>({
     }
 });
 
+const stepsCountSchema = buildSchema<StepCount>({
+    name: "steps_count",
+    properties: {
+        email: {
+            title: "email",
+            validation: { required: true },
+            dataType: "string"
+        },
+        profilePicture: {
+            title: "profilePicture",
+            validation: { required: true },
+            dataType: "string"
+        },
+        value: {
+            title: "value",
+            validation: { required: true },
+            dataType: "string"
+        }
+    }
+});
+
 const localeSchema = buildSchema({
     customId: locales,
     name: "Locale",
@@ -201,12 +228,23 @@ const localeSchema = buildSchema({
 export default function App() {
 
     const navigation: NavigationBuilder = async ({
-                                                     user,
-                                                     authController
-                                                 }: NavigationBuilderProps) => {
+        user,
+        authController
+    }: NavigationBuilderProps) => {
 
         return ({
             collections: [
+                buildCollection({
+                    path: "steps_count",
+                    schema: stepsCountSchema,
+                    name: "steps_count",
+                    permissions: ({ authController }) => ({
+                        edit: true,
+                        create: true,
+                        // we have created the roles object in the navigation builder
+                        delete: authController.extra.roles.includes("admin")
+                    })
+                }),
                 buildCollection({
                     path: "products",
                     schema: productSchema,
