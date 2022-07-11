@@ -98,6 +98,21 @@ type PersonalData = {
     workingDay: string;
 }
 
+type SedentaryBehavior = {
+    questions: string[];
+}
+
+type Ipaq = {
+    number: number;
+    options: IpaqOption[];
+    title: string;
+}
+
+type IpaqOption = {
+    title: string;
+    type: string;
+}
+
 const productSchema = buildSchema<Product>({
     name: "Product",
     properties: {
@@ -456,6 +471,56 @@ const localeSchema = buildSchema({
     }
 });
 
+const sedentaryBehaviorSchema = buildSchema<SedentaryBehavior>({
+    name: "form_sedentary_behavior",
+    properties: {
+        questions: {
+            title: "Questions",
+            description: "Preguntas para el formulario",
+            dataType: "array",
+            of: {
+                dataType: "string"
+            }
+        }
+    }
+});
+
+const ipaqSchema = buildSchema<Ipaq>({
+    name: "form_ipaq",
+    properties: {
+        number: {
+            title: "Number",
+            description: "Number",
+            dataType: "number"
+        },
+        options: {
+            title: "Options",
+            description: "Opciones para responder",
+            dataType: "array",
+            of: {
+                dataType: "map",
+                properties: {
+                    title: {
+                        title: "Title",
+                        description: "Titulo",
+                        dataType: "string"
+                    },
+                    type: {
+                        title: "Type",
+                        description: "Tipo",
+                        dataType: "string"
+                    }
+                }
+            }
+        },
+        title: {
+            title: "Title",
+            validation:  { required: true },
+            dataType: "string"
+        }
+    }
+});
+
 export default function App() {
 
     const navigation: NavigationBuilder = async ({
@@ -502,6 +567,28 @@ export default function App() {
                     path: "form_personal_data",
                     schema: personalDataSchema,
                     name: "form_personal_data",
+                    permissions: ({ authController }) => ({
+                        edit: true,
+                        create: true,
+                        // we have created the roles object in the navigation builder
+                        delete: authController.extra.roles.includes("admin")
+                    })
+                }),
+                buildCollection({
+                    path: "form_sedentary_behavior",
+                    schema: sedentaryBehaviorSchema,
+                    name: "form_sedentary_behavior",
+                    permissions: ({ authController }) => ({
+                        edit: true,
+                        create: true,
+                        // we have created the roles object in the navigation builder
+                        delete: authController.extra.roles.includes("admin")
+                    })
+                }),
+                buildCollection({
+                    path: "form_ipaq",
+                    schema: ipaqSchema,
+                    name: "form_ipaq",
                     permissions: ({ authController }) => ({
                         edit: true,
                         create: true,
